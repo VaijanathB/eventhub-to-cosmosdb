@@ -32,3 +32,5 @@ azure:
     key: [Access key]
     database: Eventhubs
     container: events
+    consume:
+      fixed-threadpool-size: 30

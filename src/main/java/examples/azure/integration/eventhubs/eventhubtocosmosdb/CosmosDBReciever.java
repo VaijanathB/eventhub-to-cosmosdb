@@ -55,6 +55,12 @@ public class CosmosDBReciever implements EventReceiver {
     private String containerName;
 
     /**
+     * Stores the consume threadpool size.
+     */
+    @Value("${azure.cosmos.consume.fixed-threadpool-size}")
+    private int fixedThreadPoolSize;
+
+    /**
      * Stores the Cosmos DB container.
      */
     private CosmosContainer container;
@@ -76,7 +82,7 @@ public class CosmosDBReciever implements EventReceiver {
     @Override
     public Consumer<Message<Event>> consume() {
         return message -> {
-            ExecutorService executorService = Executors.newFixedThreadPool(10);
+            ExecutorService executorService = Executors.newFixedThreadPool(fixedThreadPoolSize);
 
             executorService.submit(() -> {
                 CosmosItemRequestOptions options = new CosmosItemRequestOptions();
