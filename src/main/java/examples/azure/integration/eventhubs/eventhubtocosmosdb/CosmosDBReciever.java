@@ -81,14 +81,15 @@ public class CosmosDBReciever implements EventReceiver {
             executorService.submit(() -> {
                 CosmosItemRequestOptions options = new CosmosItemRequestOptions();
                 var response= container.upsertItem(message.getPayload(), options);
-
-                Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-
-                checkpointer.success()
-                        .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload().getMessage()))
-                        .doOnError(error -> LOGGER.error("Exception found", error))
-                        .subscribe();
+                // User needs to handle the case when the Upsert fails
             });
+
+            Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+
+            checkpointer.success()
+                    .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload().getMessage()))
+                    .doOnError(error -> LOGGER.error("Exception found", error))
+                    .subscribe();
 
         };
 
